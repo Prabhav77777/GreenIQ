@@ -269,23 +269,23 @@ strong {
  * Utility Classes
  * ------------------------------------------------------------------------- */
 .animate-fade-in {
-  animation: fadeIn var(--transition-base) ease forwards;
+  animation: fadeIn var(--transition-base) forwards;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp var(--transition-slow) ease forwards;
+  animation: fadeInUp var(--transition-slow) forwards;
 }
 
 .animate-slide-in-right {
-  animation: slideInRight var(--transition-slow) ease forwards;
+  animation: slideInRight var(--transition-slow) forwards;
 }
 
 .animate-slide-in-left {
-  animation: slideInLeft var(--transition-slow) ease forwards;
+  animation: slideInLeft var(--transition-slow) forwards;
 }
 
 .animate-scale-in {
-  animation: scaleIn var(--transition-base) ease forwards;
+  animation: scaleIn var(--transition-base) forwards;
 }
 
 .text-center { text-align: center; }
