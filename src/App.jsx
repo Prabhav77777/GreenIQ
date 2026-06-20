@@ -1274,7 +1274,7 @@ function Tracking({ entries, streak, setPage }) {
  * TIPS PAGE — "Reduce"
  * ========================================================================== */
 function Tips({ result, setPage }) {
-  const [tips, setTips] = useState(null);
+  const [tips, setTips] = useState(() => result ? getFallbackTips(result) : null);
   const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
