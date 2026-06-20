@@ -171,51 +171,165 @@ export function getFallbackTips(footprintResult) {
 }
 
 /**
- * Generate tips using Gemini API (LLM-powered)
- * Falls back to curated tips if API is unavailable
+ * Clean and parse JSON response from Grok API
+ * Handles markdown wrappers (```json ... ```) and object wrappers (e.g. { "tips": [...] })
+ * @param {string} text - Raw model response
+ * @returns {Array|object|null} Parsed JSON or null
+ */
+function parseGrokResponse(text) {
+  if (!text) return null;
+
+  let cleanText = text.trim();
+
+  // Strip markdown code block markers if present
+  if (cleanText.includes('```')) {
+    const match = cleanText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (match && match[1]) {
+      cleanText = match[1].trim();
+    }
+  }
+
+  // Look for JSON arrays or objects
+  const firstBracket = cleanText.indexOf('[');
+  const firstBrace = cleanText.indexOf('{');
+  
+  let jsonStart = -1;
+  let jsonEnd = -1;
+
+  if (firstBracket !== -1 && (firstBrace === -1 || firstBracket < firstBrace)) {
+    jsonStart = firstBracket;
+    jsonEnd = cleanText.lastIndexOf(']');
+  } else if (firstBrace !== -1) {
+    jsonStart = firstBrace;
+    jsonEnd = cleanText.lastIndexOf('}');
+  }
+
+  if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+    cleanText = cleanText.substring(jsonStart, jsonEnd + 1);
+  }
+
+  try {
+    const parsed = JSON.parse(cleanText);
+
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+
+    if (parsed && typeof parsed === 'object') {
+      // Find the first field that contains an array and return it
+      for (const key of Object.keys(parsed)) {
+        if (Array.isArray(parsed[key])) {
+          return parsed[key];
+        }
+      }
+      return parsed;
+    }
+  } catch (error) {
+    console.warn('Failed to parse clean JSON:', error.message);
+  }
+
+  return null;
+}
+
+/**
+ * Generate tips using Grok API (LLM-powered)
+ * Falls back to curated tips if API is unavailable or fails
  * @param {object} footprintResult - Result from calculateFootprint
- * @param {string} apiKey - Gemini API key
+ * @param {string} apiKey - Grok API key
  * @returns {Promise<Array>} Array of tip objects
  */
 export async function generateTips(footprintResult, apiKey) {
-  if (!apiKey) {
+  const cleanKey = apiKey && typeof apiKey === 'string' 
+    ? apiKey.trim() 
+    : '';
+
+  // Handle common blank placeholder/null values from environment builders
+  if (!cleanKey || cleanKey === 'undefined' || cleanKey === 'null' || cleanKey === 'your_api_key_here') {
     return getFallbackTips(footprintResult);
   }
 
   try {
     const prompt = buildPrompt(footprintResult);
+    let response;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
+    // Try Grok-2 first
+    try {
+      response = await fetch(
+        'https://api.x.ai/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cleanKey}`
+          },
+          body: JSON.stringify({
+            model: 'grok-2',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are GreenIQ, an AI carbon footprint advisor specialized in the Indian context.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
             temperature: 0.7,
-            maxOutputTokens: 2048,
-            responseMimeType: 'application/json'
-          }
-        })
-      }
-    );
+            response_format: { type: 'json_object' }
+          })
+        }
+      );
+    } catch (e) {
+      console.warn('Grok-2 request failed, trying grok-beta:', e.message);
+    }
 
-    if (!response.ok) {
-      console.warn('Gemini API error, falling back to curated tips');
+    // Fallback to grok-beta if grok-2 is not OK or connection failed
+    if (!response || !response.ok) {
+      console.warn('Grok-2 failed or unavailable, trying grok-beta...');
+      response = await fetch(
+        'https://api.x.ai/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cleanKey}`
+          },
+          body: JSON.stringify({
+            model: 'grok-beta',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are GreenIQ, an AI carbon footprint advisor specialized in the Indian context.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+            temperature: 0.7,
+            response_format: { type: 'json_object' }
+          })
+        }
+      );
+    }
+
+    if (!response || !response.ok) {
+      console.warn('Grok API error (both grok-2 and grok-beta), falling back to curated tips');
       return getFallbackTips(footprintResult);
     }
 
     const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text = data?.choices?.[0]?.message?.content;
 
     if (!text) {
+      console.warn('Empty response text from Grok API, falling back to curated tips');
       return getFallbackTips(footprintResult);
     }
 
-    const parsed = JSON.parse(text);
+    const parsed = parseGrokResponse(text);
 
-    if (!Array.isArray(parsed) || parsed.length === 0) {
+    if (!parsed || !Array.isArray(parsed) || parsed.length === 0) {
+      console.warn('Failed to parse Grok response as a valid array, falling back to curated tips');
       return getFallbackTips(footprintResult);
     }
 
@@ -235,7 +349,7 @@ export async function generateTips(footprintResult, apiKey) {
 }
 
 /**
- * Build the prompt for Gemini API
+ * Build the prompt for Grok API
  * @param {object} result - Footprint calculation result
  * @returns {string} Formatted prompt
  */
@@ -257,12 +371,13 @@ Generate exactly 6 personalized, actionable tips to reduce their carbon footprin
 Focus on their highest-emission categories first.
 Make tips specific to the Indian context (mention Indian alternatives, schemes, local solutions).
 
-Return a JSON array of objects with these fields:
+Return a JSON object containing a "tips" array of objects with these fields:
 - title (string, max 60 chars)
 - description (string, 2-3 sentences, actionable and specific)
 - estimatedSavingsKg (number, realistic annual kgCO2 savings)
 - effort (string: "Easy", "Medium", or "Hard")
 - category (string: "Transport", "Electricity", "Diet", "Travel", or "Lifestyle")
 
-Sort by estimatedSavingsKg descending. Be realistic with savings estimates.`;
+Sort the tips inside the array by estimatedSavingsKg descending. Be realistic with savings estimates.`;
 }
+

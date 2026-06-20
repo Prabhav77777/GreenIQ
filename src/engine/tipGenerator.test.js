@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { getFallbackTips } from './tipGenerator.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { getFallbackTips, generateTips } from './tipGenerator.js';
 
 const mockFootprintResult = {
   categories: [
@@ -60,3 +60,120 @@ describe('getFallbackTips', () => {
     expect(titles.length).toBe(new Set(titles).size);
   });
 });
+
+describe('generateTips (Grok API)', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('immediately returns fallback tips if no API key is provided', async () => {
+    const tips = await generateTips(mockFootprintResult, '');
+    expect(tips.length).toBeGreaterThan(0);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('returns fallback tips if API key is placeholders', async () => {
+    const tips = await generateTips(mockFootprintResult, 'your_api_key_here');
+    expect(tips.length).toBeGreaterThan(0);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('successfully fetches and parses tips array from grok-2', async () => {
+    const mockTipsResponse = [
+      { title: 'Tip A', description: 'Desc A', estimatedSavingsKg: 200, effort: 'Easy', category: 'Transport' },
+      { title: 'Tip B', description: 'Desc B', estimatedSavingsKg: 100, effort: 'Medium', category: 'Electricity' }
+    ];
+
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { content: JSON.stringify(mockTipsResponse) } }]
+      })
+    });
+
+    const tips = await generateTips(mockFootprintResult, 'valid-key');
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api.x.ai/v1/chat/completions',
+      expect.objectContaining({
+        body: expect.stringContaining('grok-2')
+      })
+    );
+    expect(tips).toHaveLength(2);
+    expect(tips[0].title).toBe('Tip A');
+  });
+
+  it('successfully parses tips when response is wrapped in markdown code blocks', async () => {
+    const mockTipsResponse = [
+      { title: 'Markdown Tip', description: 'Desc M', estimatedSavingsKg: 300, effort: 'Hard', category: 'Diet' }
+    ];
+
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { content: `\`\`\`json\n${JSON.stringify(mockTipsResponse)}\n\`\`\`` } }]
+      })
+    });
+
+    const tips = await generateTips(mockFootprintResult, 'valid-key');
+    expect(tips).toHaveLength(1);
+    expect(tips[0].title).toBe('Markdown Tip');
+  });
+
+  it('successfully parses tips when response is wrapped in object with tips key', async () => {
+    const mockTipsResponse = {
+      tips: [
+        { title: 'Wrapped Tip', description: 'Desc W', estimatedSavingsKg: 150, effort: 'Easy', category: 'Lifestyle' }
+      ]
+    };
+
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { content: JSON.stringify(mockTipsResponse) } }]
+      })
+    });
+
+    const tips = await generateTips(mockFootprintResult, 'valid-key');
+    expect(tips).toHaveLength(1);
+    expect(tips[0].title).toBe('Wrapped Tip');
+  });
+
+  it('falls back to grok-beta if grok-2 fails', async () => {
+    const mockTipsResponse = [
+      { title: 'Beta Tip', description: 'Desc Beta', estimatedSavingsKg: 250, effort: 'Medium', category: 'Travel' }
+    ];
+
+    // First fetch for grok-2 fails
+    fetch.mockResolvedValueOnce({ ok: false });
+    // Second fetch for grok-beta succeeds
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { content: JSON.stringify(mockTipsResponse) } }]
+      })
+    });
+
+    const tips = await generateTips(mockFootprintResult, 'valid-key');
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(tips).toHaveLength(1);
+    expect(tips[0].title).toBe('Beta Tip');
+  });
+
+  it('falls back to local curated tips if both model requests fail', async () => {
+    fetch.mockResolvedValue({ ok: false });
+
+    const tips = await generateTips(mockFootprintResult, 'valid-key');
+    expect(tips.length).toBeGreaterThan(0);
+    // Since API failed, it should match the fallback tips
+    const fallback = getFallbackTips(mockFootprintResult);
+    expect(tips[0].title).toBe(fallback[0].title);
+  });
+});
+

@@ -1280,7 +1280,7 @@ function Tips({ result, setPage }) {
   React.useEffect(() => {
     if (!result) return;
     setLoading(true);
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+    const apiKey = import.meta.env.VITE_GROK_API_KEY || '';
     generateTips(result, apiKey)
       .then(setTips)
       .finally(() => setLoading(false));
