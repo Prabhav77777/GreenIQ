@@ -145,13 +145,26 @@ const FALLBACK_TIPS = {
  * @returns {Array} Sorted array of tip objects
  */
 export function getFallbackTips(footprintResult) {
-  if (!footprintResult || !footprintResult.categories) return [];
-
-  // Sort categories by emission value (highest first)
-  const sorted = [...footprintResult.categories].sort((a, b) => b.value - a.value);
-
   const tips = [];
   const seenTitles = new Set();
+
+  let categories = footprintResult && footprintResult.categories
+    ? footprintResult.categories
+    : null;
+
+  // Fallback to all categories if footprint result or categories are missing
+  if (!categories || !Array.isArray(categories) || categories.length === 0) {
+    categories = [
+      { id: 'transport', value: 1 },
+      { id: 'electricity', value: 1 },
+      { id: 'diet', value: 1 },
+      { id: 'flights', value: 1 },
+      { id: 'lifestyle', value: 1 }
+    ];
+  }
+
+  // Sort categories by emission value (highest first)
+  const sorted = [...categories].sort((a, b) => (b.value || 0) - (a.value || 0));
 
   // Pick tips from highest-emission categories first
   for (const cat of sorted) {
@@ -333,14 +346,22 @@ export async function generateTips(footprintResult, apiKey) {
       return getFallbackTips(footprintResult);
     }
 
-    // Validate and sanitize each tip
-    return parsed.map((tip) => ({
-      title: String(tip.title || 'Tip'),
-      description: String(tip.description || ''),
-      estimatedSavingsKg: Number(tip.estimatedSavingsKg) || 0,
-      effort: ['Easy', 'Medium', 'Hard'].includes(tip.effort) ? tip.effort : 'Medium',
-      category: String(tip.category || 'General')
-    })).slice(0, 8);
+    // Validate and sanitize each tip with flexible property fallbacks
+    return parsed.map((tip) => {
+      const title = tip.title || tip.Title || tip.name || tip.Name || 'Tip';
+      const description = tip.description || tip.Description || tip.desc || tip.Desc || '';
+      const estimatedSavingsKg = tip.estimatedSavingsKg || tip.estimated_savings_kg || tip.savings || tip.Savings || 0;
+      const effort = tip.effort || tip.Effort || 'Medium';
+      const category = tip.category || tip.Category || 'General';
+
+      return {
+        title: String(title),
+        description: String(description),
+        estimatedSavingsKg: Number(estimatedSavingsKg) || 0,
+        effort: ['Easy', 'Medium', 'Hard'].includes(effort) ? effort : 'Medium',
+        category: String(category)
+      };
+    }).slice(0, 8);
 
   } catch (error) {
     console.warn('Tip generation failed, using fallback:', error.message);

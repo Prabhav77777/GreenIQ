@@ -46,12 +46,16 @@ describe('getFallbackTips', () => {
     expect(transportTips.length).toBeGreaterThan(0);
   });
 
-  it('returns empty array for null input', () => {
-    expect(getFallbackTips(null)).toEqual([]);
+  it('returns fallback tips for null input', () => {
+    const tips = getFallbackTips(null);
+    expect(Array.isArray(tips)).toBe(true);
+    expect(tips.length).toBeGreaterThan(0);
   });
 
-  it('returns empty array for missing categories', () => {
-    expect(getFallbackTips({})).toEqual([]);
+  it('returns fallback tips for missing categories', () => {
+    const tips = getFallbackTips({});
+    expect(Array.isArray(tips)).toBe(true);
+    expect(tips.length).toBeGreaterThan(0);
   });
 
   it('has no duplicate tips', () => {
