@@ -3,7 +3,7 @@
  * 
  * Generates personalized carbon reduction tips.
  * Two modes:
- * 1. LLM-powered (Gemini API) — rich, contextual, natural-language tips
+ * 1. LLM-powered (Grok API) — rich, contextual, natural-language tips
  * 2. Fallback — curated static tips matched to user's highest-emission categories
  * 
  * The math/calculation is NEVER done by the LLM — only the natural language.
