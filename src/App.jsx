@@ -85,6 +85,7 @@ function AnimatedNumber({ value, duration = 1200, decimals = 2 }) {
 function Typewriter({ text, speed = 10 }) {
   const [displayedText, setDisplayedText] = useState('');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const indexRef = useRef(0);
 
   React.useEffect(() => {
     if (prefersReducedMotion) {
@@ -92,12 +93,16 @@ function Typewriter({ text, speed = 10 }) {
       return;
     }
 
+    indexRef.current = 0;
     setDisplayedText('');
-    let i = 0;
+
     const interval = setInterval(() => {
-      setDisplayedText(prev => prev + text.charAt(i));
-      i++;
-      if (i >= text.length) {
+      indexRef.current += 1;
+      // Slice from the source text instead of appending one char at a time —
+      // self-correcting even if this tick fires more than once for the same index.
+      setDisplayedText(text.slice(0, indexRef.current));
+
+      if (indexRef.current >= text.length) {
         clearInterval(interval);
       }
     }, speed);
