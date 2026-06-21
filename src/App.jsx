@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo , useRef} from 'react';
 import { useLocalStorage, useFootprintHistory, useTheme } from './hooks/useAppState.js';
 import { calculateFootprint } from './engine/calculator.js';
 import { generateTips, getFallbackTips } from './engine/tipGenerator.js';
