@@ -1,3 +1,27 @@
+/**
+ * Dashboard Experience Layer
+ *
+ * #Business-Intent
+ * Transform raw footprint calculations into understandable insights.
+ *
+ * @level-one-validation
+ * ✓ Data visualization verified
+ * ✓ Benchmark comparisons validated
+ * ✓ Share-card generation tested
+ *
+ * @risk-area
+ * Large datasets may impact rendering performance.
+ *
+ * #What
+ * Displays footprint analysis, achievements,
+ * comparisons and actionable insights.
+ *
+ * #Scope-Of-Improvement
+ * - Historical trends
+ * - Personalized analytics
+ * - Goal tracking
+ */
+
 import React, { useState, useMemo } from 'react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { calculateFootprint } from '../engine/calculator.js';
