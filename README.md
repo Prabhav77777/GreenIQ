@@ -1,262 +1,590 @@
-# 🌿 GreenIQ — Carbon Footprint Awareness Platform
+# 🌱 GreenIQ
 
-> **PromptWars Hackathon — Challenge 3**  
-> _"Design a solution that helps individuals understand, track, and reduce their carbon footprint through simple actions and personalized insights."_
+### India's Hyperlocal Carbon Intelligence Platform
 
-GreenIQ is a **hyperlocal, India-context-aware** personal carbon footprint calculator and advisor. Unlike generic US/EU-centric tools, GreenIQ is built from the ground up for Indian lifestyles — covering auto-rickshaws, two-wheelers, metro systems, state-wise electricity grid emission factors, Indian diet patterns (vegetarian/non-veg), LPG/PNG cooking fuels, and more.
+<div align="center">
 
----
+**Measure • Understand • Reduce • Sustain**
 
-## 🎯 Problem Statement Alignment
+A modern carbon footprint intelligence platform built specifically for Indian lifestyles, helping individuals calculate, track, and reduce their environmental impact through hyperlocal emission modeling, AI-powered recommendations, sustainability analytics, and long-term behavior tracking.
 
-### Understand
-- **Interactive Dashboard** with doughnut charts breaking down emissions by category (Transport, Electricity, Diet, Travel, Lifestyle)
-- **Comparison visualization** showing the user's footprint vs India's national average (1.9 tCO₂/yr) and global average (4.7 tCO₂/yr)
-- **"If everyone did this" multiplier** — shows India's total emissions if every citizen had the user's footprint
-- **Footprint classification** (Low / Moderate / High / Very High) with contextual descriptions
+🌍 **Live Demo:** https://greeniq-lyart.vercel.app/
 
-### Track
-- **Persistent history** — every calculation is automatically saved to localStorage
-- **Trend line chart** showing footprint changes over time
-- **Entry history table** with per-category breakdowns and percentage change from previous entry
-- **Monthly streak counter** for gamified engagement
+![React](https://img.shields.io/badge/React-19-blue)
+![Vite](https://img.shields.io/badge/Vite-Fast-purple)
+![Tests](https://img.shields.io/badge/Tests-30%2B-success)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-### Reduce
-- **Personalized, ranked tips** generated based on the user's highest-emission categories
-- **AI-powered tips** (Gemini API) for natural-language, context-aware advice — or curated fallback tips if no API key is set
-- Each tip shows **estimated kgCO₂ savings** and **effort level** (Easy / Medium / Hard)
-- All tips are **India-specific** (PM-SURYA Ghar scheme, Quick Ride carpooling, induction cooking, Indian Railways vs flights, etc.)
-
-### Personalization
-- Tips are ranked by the user's specific emission breakdown (not generic)
-- State-wise grid factors mean a user in Karnataka (0.50 kgCO₂/kWh, hydro-heavy) gets different electricity impact than one in Jharkhand (0.97 kgCO₂/kWh, coal-heavy)
-- Transport modes include India-specific options (auto-rickshaw, two-wheeler, shared cab)
-- Diet options include Eggetarian (common in South India) alongside standard veg/non-veg
-- Bill-to-kWh conversion using Indian average electricity rates
+</div>
 
 ---
 
-## 🏗️ Architecture & Tech Stack
+# 🚀 Why GreenIQ?
 
-| Layer | Technology | Why |
-|-------|-----------|-----|
-| **Build** | Vite | Fastest bundler, tiny output |
-| **UI** | React 19 | Component model ideal for multi-step forms + dashboard |
-| **Styling** | Vanilla CSS + Custom Properties | No framework overhead; full design control; lightweight |
-| **Charts** | Chart.js + react-chartjs-2 | Mature, accessible, ~60KB gzipped |
-| **Testing** | Vitest + Testing Library | Native Vite integration, fast |
-| **AI Tips** | Google Gemini API | Free tier; used ONLY for natural-language generation |
-| **Persistence** | localStorage | Zero backend; tracks entries over time |
-| **Sanitization** | DOMPurify | XSS prevention for all user inputs |
+Most carbon footprint calculators are designed around Western lifestyles and assumptions.
 
-### Key Architecture Decisions
+They often ignore realities that millions of Indians experience daily:
 
-1. **Deterministic calculation engine** — All math uses documented emission factors from real sources (CEA, TERI, IPCC, IEA). No LLM involvement in calculations. Same inputs → same outputs.
+* 🛺 Auto-rickshaws
+* 🏍 Two-wheelers
+* 🚇 Metro systems
+* 🔥 LPG & PNG cooking fuels
+* ⚡ State-specific electricity grids
+* 🍛 Indian dietary patterns
+* 🚆 Indian Railways
+* 🏠 Indian household energy consumption
 
-2. **LLM used only for tip text** — The Gemini API generates natural-language advice, but the app calculates impact estimates deterministically. If the API is unavailable, curated fallback tips are shown.
+As a result, users receive estimates that are often inaccurate and difficult to act upon.
 
-3. **Single-page app without a router** — Keeps the bundle small and navigation instant. State-based page switching with clean transitions.
-
-4. **All India-specific data in dedicated modules** — `src/data/` contains emission factors, state grid data, transport modes, and diet profiles with inline source citations.
+**GreenIQ solves this problem through hyperlocal carbon intelligence designed specifically for India.**
 
 ---
 
-## 📂 Project Structure
+# ✨ Key Highlights
 
+| Metric                        | Value |
+| ----------------------------- | ----- |
+| 🇮🇳 States & UTs Supported   | 37    |
+| 🚗 Transport Modes            | 9     |
+| 🍽 Diet Profiles              | 5     |
+| 📊 Interactive Visualizations | 10+   |
+| 🏆 Achievement Badges         | 6     |
+| 🧪 Unit Tests                 | 30+   |
+| ⚡ Backend Required            | No    |
+| 🤖 AI Assistance              | Yes   |
+| 📱 Responsive Design          | 100%  |
+
+---
+
+# 📸 Screenshots
+
+## Dashboard Overview
+
+![Dashboard](<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/66f47f25-7d80-4497-9ec7-cf44c7fc1418" />
+)
+
+*Interactive carbon footprint dashboard showing emission breakdowns, sustainability score, benchmarks, and environmental impact equivalents.*
+
+---
+
+## Carbon Calculator
+
+![Calculator](./screenshots/calculator.png)
+
+*Multi-step calculator with India-specific transport, electricity, diet, and lifestyle inputs.*
+
+---
+
+## AI-Powered Recommendations
+
+![AI Recommendations](./screenshots/tips.png)
+
+*Personalized sustainability recommendations ranked by impact, effort, and estimated CO₂ savings.*
+
+---
+
+## Historical Tracking
+
+![History](./screenshots/history.png)
+
+*Track carbon footprint trends over time with historical analytics and progress monitoring.*
+
+---
+
+## What-If Scenario Simulator
+
+![Simulator](./screenshots/simulator.png)
+
+*Experiment with lifestyle changes and instantly visualize potential carbon reductions.*
+
+# 🎯 Core Features
+
+## 📊 Carbon Footprint Calculator
+
+Calculate annual carbon emissions across multiple categories:
+
+### 🚗 Transportation
+
+* Car
+* Bike
+* Scooter
+* Auto-rickshaw
+* Shared cab
+* Metro
+* Bus
+* Railways
+* Flights
+
+### ⚡ Electricity
+
+* Monthly electricity consumption
+* Bill-to-kWh conversion
+* State-specific emission factors
+* Regional grid analysis
+
+### 🍽 Diet
+
+* Vegan
+* Vegetarian
+* Eggetarian
+* Chicken-based
+* Mixed diet
+
+### 🔥 Household Energy
+
+* LPG
+* PNG
+* Induction cooking
+* Air-conditioner usage
+
+### ✈️ Travel
+
+* Domestic flights
+* Rail journeys
+* Long-distance travel patterns
+
+---
+
+## 📈 Interactive Sustainability Dashboard
+
+GreenIQ transforms raw emissions data into meaningful insights.
+
+### Included Visualizations
+
+* Doughnut emission breakdown
+* Historical trend charts
+* Category comparisons
+* National benchmark comparisons
+* Global benchmark comparisons
+* Carbon intensity gauges
+
+### Key Insights
+
+Users instantly understand:
+
+* Their largest emission sources
+* Reduction opportunities
+* Sustainability progress
+* Long-term behavioral trends
+
+---
+
+## 🤖 AI-Powered Sustainability Advisor
+
+GreenIQ generates personalized recommendations based on a user's footprint profile.
+
+### Recommendation Engine
+
+* Category-specific recommendations
+* Ranked by impact
+* Estimated carbon savings
+* Effort assessment
+* India-specific suggestions
+
+Examples:
+
+* Switching to metro commuting
+* Adopting induction cooking
+* PM-SURYA Ghar solar adoption
+* Railway alternatives to flights
+* Carpooling strategies
+
+### Reliable Fallback System
+
+Even without an API key:
+
+✅ Personalized recommendations remain available
+
+✅ User experience remains uninterrupted
+
+✅ Suggestions remain actionable and context-aware
+
+---
+
+## 🧪 What-If Scenario Simulator
+
+Users can preview the impact of sustainability decisions before implementing them.
+
+Examples:
+
+* Using metro instead of a private vehicle
+* Reducing AC usage
+* Switching diet patterns
+* Adopting induction cooking
+* Increasing public transport usage
+
+Results update instantly.
+
+---
+
+## 🏆 Gamification & Engagement
+
+To encourage long-term behavior change:
+
+### Included Features
+
+* Achievement badges
+* Sustainability milestones
+* Monthly streak tracking
+* Progress indicators
+* Behavioral rewards
+
+### Example Badges
+
+🌱 Eco Warrior
+
+🚆 Rail Champion
+
+⚡ Coal-Free Hero
+
+✈️ Frequent Flyer
+
+🏆 Sustainability Master
+
+---
+
+# 🌍 Hyperlocal Intelligence
+
+One of GreenIQ's biggest differentiators.
+
+### State-Wise Grid Emission Factors
+
+Electricity emissions vary significantly across India.
+
+| State     | Grid Factor    |
+| --------- | -------------- |
+| Karnataka | 0.50 kgCO₂/kWh |
+| Jharkhand | 0.97 kgCO₂/kWh |
+
+This creates significantly more realistic carbon calculations.
+
+---
+
+# 📚 Historical Tracking
+
+Unlike one-time calculators, GreenIQ promotes continuous improvement.
+
+### Tracking Features
+
+* Automatic history saving
+* Trend visualization
+* Entry comparisons
+* Percentage changes
+* Monthly streaks
+
+Persistence is handled using localStorage, requiring no backend.
+
+---
+
+# 🎨 User Experience
+
+### Modern Design
+
+* Fully responsive
+* Mobile-first
+* Dark mode
+* Accessible interface
+* Animated dashboards
+* Smooth transitions
+
+### Accessibility
+
+* Semantic HTML
+* WCAG-compliant contrast
+* Keyboard navigation
+* Screen-reader support
+* Reduced-motion support
+* ARIA labels throughout
+
+---
+
+# 🏗 Architecture
+
+```mermaid
+flowchart TD
+
+A[User Input]
+--> B[Carbon Calculation Engine]
+
+B --> C[Transport Module]
+B --> D[Electricity Module]
+B --> E[Diet Module]
+B --> F[Lifestyle Module]
+
+C --> G[Results Engine]
+D --> G
+E --> G
+F --> G
+
+G --> H[Analytics Dashboard]
+
+G --> I[AI Recommendation Layer]
+
+H --> J[Charts & Insights]
+I --> K[Personalized Sustainability Tips]
 ```
+
+---
+
+# ⚙️ Tech Stack
+
+| Layer       | Technology        |
+| ----------- | ----------------- |
+| Frontend    | React 19          |
+| Build Tool  | Vite              |
+| Charts      | Chart.js          |
+| Testing     | Vitest            |
+| AI          | Google Gemini API |
+| Persistence | localStorage      |
+| Security    | DOMPurify         |
+| Styling     | Vanilla CSS       |
+
+---
+
+# 📂 Project Structure
+
+```text
 greeniq/
-├── public/favicon.svg          # Brand icon
+│
 ├── src/
-│   ├── data/                   # Emission factor datasets with source citations
-│   │   ├── emissionFactors.js  # Constants (grid factors, averages, rates)
-│   │   ├── transportModes.js   # 9 Indian transport modes with gCO2/pkm
-│   │   ├── indianStates.js     # 37 states/UTs with grid emission factors
-│   │   ├── dietProfiles.js     # 5 Indian diet profiles with annual kgCO2
-│   │   ├── nationalAverages.js # Benchmark data + category thresholds
-│   │   └── indiaMapPaths.js    # Raw SVG coordinates for Indian states map selection
-│   ├── engine/                 # Core logic (pure functions, no side effects)
-│   │   ├── calculator.js       # Deterministic calculation engine
-│   │   ├── calculator.test.js  # 30+ unit tests for all calculation functions
-│   │   ├── equivalents.js      # Real-world relatable emission equivalents
-│   │   ├── equivalents.test.js # Unit tests for equivalents math
-│   │   ├── badges.js           # Milestone badge rules and evaluations
-│   │   ├── badges.test.js      # Unit tests for unlock milestones
-│   │   ├── tipGenerator.js     # LLM + fallback tip generation
-│   │   └── tipGenerator.test.js# Tests for tip ranking & fallback logic
-│   ├── hooks/                  # Custom React hooks
-│   │   └── useAppState.js      # localStorage, history tracking, theme
-│   ├── utils/                  # Utilities
-│   │   ├── sanitize.js         # Input validation & XSS prevention
-│   │   ├── sanitize.test.js    # Security-focused tests
-│   │   ├── formatters.js       # Number, date, CO2 formatting (Indian locale)
-│   │   ├── shareCard.js        # Canvas score card drawer
-│   │   └── shareCard.test.js   # Tests for canvas rendering metrics
-│   ├── styles/                 # Design system
-│   │   ├── design-tokens.css   # CSS custom properties (colors, spacing, shadows)
-│   │   ├── global.css          # Reset, typography, animations, utilities
-│   │   ├── components.css      # Button, card, form, badge, modal, nav styles
-│   │   └── pages.css           # Page-level layouts (landing, calculator, dashboard)
-│   ├── test/setup.js           # Vitest setup
-│   ├── App.jsx                 # Main SPA with all pages
-│   └── main.jsx                # React entry point
-├── index.html                  # Entry HTML with SEO meta tags
-├── vite.config.js              # Vite + React plugin config
-├── vitest.config.js            # Test configuration
-├── .env.example                # Environment variable template
-├── .gitignore                  # Excludes node_modules, dist, .env
-├── package.json                # Scripts: dev, build, test, test:coverage
-└── README.md                   # This file
+│   ├── data/
+│   ├── engine/
+│   ├── hooks/
+│   ├── utils/
+│   ├── styles/
+│   └── tests/
+│
+├── public/
+├── package.json
+└── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+# 🔬 Calculation Methodology
 
-### Prerequisites
-- Node.js 18+ and npm
+GreenIQ follows a deterministic calculation model.
 
-### Installation
+### Important Principle
+
+> AI never performs carbon calculations.
+
+All emissions are computed using documented emission factors from:
+
+* Central Electricity Authority (CEA)
+* TERI
+* IEA
+* IPCC
+* DEFRA
+* IISc Bangalore
+* Research-backed Indian dietary studies
+
+### Benefits
+
+* Reproducibility
+* Transparency
+* Scientific consistency
+* Auditability
+
+The AI layer is used only for recommendation generation.
+
+---
+
+# 🏆 Competitive Advantage
+
+| Feature                       | GreenIQ | Typical Calculator |
+| ----------------------------- | ------- | ------------------ |
+| Indian Grid Factors           | ✅       | ❌                  |
+| Auto-Rickshaw Support         | ✅       | ❌                  |
+| Two-Wheeler Modeling          | ✅       | ❌                  |
+| Indian Diet Profiles          | ✅       | ❌                  |
+| Historical Tracking           | ✅       | ❌                  |
+| AI Recommendations            | ✅       | ⚠️                 |
+| What-If Simulator             | ✅       | ❌                  |
+| Achievement System            | ✅       | ❌                  |
+| State-Level Personalization   | ✅       | ❌                  |
+| India-Specific Reduction Tips | ✅       | ❌                  |
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+* Node.js 18+
+* npm
+
+## Installation
 
 ```bash
-# Clone the repository
-git clone <repo-url>
+git clone <repository-url>
+
 cd greeniq
 
-# Install dependencies
 npm install
+```
 
-# (Optional) Set up Gemini API key for AI-powered tips
+### Configure Environment Variables
+
+```bash
 cp .env.example .env
-# Edit .env and add your key from https://aistudio.google.com/app/apikey
+```
 
-# Start development server
+Add:
+
+```env
+VITE_GEMINI_API_KEY=your_api_key_here
+```
+
+### Start Development Server
+
+```bash
 npm run dev
 ```
 
-### Commands
+Runs on:
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server (http://localhost:5173) |
-| `npm run build` | Production build to `dist/` |
-| `npm run preview` | Preview production build |
-| `npm test` | Run all unit tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:coverage` | Run tests with coverage report |
+```text
+http://localhost:5173
+```
 
 ---
 
-## 📊 Data Sources & Emission Factors
+# 🧪 Testing
 
-All emission factors are real-world values from authoritative sources:
+Run all tests:
 
-| Data | Source | Reference |
-|------|--------|-----------|
-| **Grid emission factors** | CEA CO₂ Baseline Database V20.0/V21.0 | cea.nic.in |
-| **Transport (India-specific)** | Shakti Foundation, TERI, DMRC | Vehicle emission studies |
-| **Railways** | IEA / UIC | ~11.5 gCO₂/pkm |
-| **Aviation** | DEFRA/IPCC (adapted) | With 1.9x radiative forcing |
-| **Diet (India)** | CGIAR, ResearchGate, IJCRT | Indian food emission studies |
-| **AC usage** | MoEF, IIT-BHU | Grid-adjusted consumption |
-| **National averages** | IEA 2023 | India: 1.9 t, Global: 4.7 t |
-| **City-wise data** | IISc Bangalore / APN-GCR | GHG inventories |
+```bash
+npm test
+```
 
-Factors are documented with inline JSDoc comments in `src/data/` files.
+Coverage:
 
----
+```bash
+npm run test:coverage
+```
 
-## 🔒 Addressing the 6 Judging Criteria
+Watch mode:
 
-### 1. Code Quality
-- Clean, modular architecture: data / engine / hooks / utils / styles separated
-- Every function has JSDoc documentation
-- Consistent naming conventions (camelCase for JS, BEM-like for CSS)
-- No placeholder/TODO stubs — all code is production-ready
-- CSS design system with tokens prevents ad-hoc styling
-
-### 2. Security
-- `.env.example` provided; API keys loaded from environment variables (never hardcoded)
-- All user inputs sanitized via DOMPurify before processing
-- Number inputs clamped to valid ranges
-- Enum inputs validated against allowlists
-- No `dangerouslySetInnerHTML` usage
-- API key passed as URL parameter to Gemini (standard for client-side usage)
-- `.gitignore` excludes `.env` files
-
-### 3. Efficiency
-- Vite for fast HMR and optimized production builds
-- Pure calculation functions — no unnecessary re-renders
-- Chart.js tree-shaken (only registered components imported)
-- CSS custom properties for theme switching (no re-paint)
-- localStorage for persistence (zero network requests for core functionality)
-- No bloated dependencies — total prod deps: react, react-dom, chart.js, react-chartjs-2, dompurify
-
-### 4. Testing
-- **30+ real unit tests** using Vitest
-- Tests cover: all 5 calculation functions, edge cases (NaN, negatives, overflow), integration (total = sum of parts), sanitization (XSS, injection, range clamping), tip generation (ranking, fallback, deduplication)
-- Run with `npm test`
-
-### 5. Accessibility
-- Semantic HTML throughout (`<main>`, `<nav>`, `<section>`, `<article>`, `<table>`)
-- Skip-to-content link for keyboard users
-- All form inputs have associated `<label>` elements
-- ARIA attributes: `role`, `aria-label`, `aria-labelledby`, `aria-describedby`, `aria-invalid`, `aria-current`, `aria-expanded`, `aria-live`
-- Radio card groups use real `<input type="radio">` with `:focus-visible` styling
-- Color contrast ≥ 4.5:1 (WCAG AA) for all text
-- `prefers-reduced-motion` media query disables animations
-- Charts have `role="img"` with descriptive `aria-label`
-- Error messages use `role="alert"` for screen reader announcement
-- Dark mode support
-
-### 6. Problem Statement Alignment
-- **Understand**: Dashboard with charts, comparisons, category breakdown, "if everyone did this" multiplier
-- **Track**: Persistent history with trend charts, entry table, streak gamification
-- **Reduce**: Personalized, ranked tips with impact estimates and effort levels
-- **Personalization**: State-wise grid factors, Indian transport/diet options, AI-powered contextual tips
-- India-specific context is evident in UI copy, data, and README — not buried in code
+```bash
+npm run test:watch
+```
 
 ---
 
-## ✨ Extra Features (Beyond Base Requirements)
+# 🌟 Beyond the Requirements
 
-| Feature | Value / Details |
-|---------|-----------------|
-| 🌍 "If everyone did this" multiplier | Makes impact tangible and relatable |
-| 📊 National + global comparison bar chart | Contextualizes the user's footprint |
-| 🔥 Monthly streak counter | Gamifies tracking engagement |
-| 🌙 Dark mode with system preference detection | Accessibility & polish |
-| 💀 Skeleton loading states | Professional UX (no blank screens) |
-| ⚠️ Error boundary with graceful recovery | Resilience |
-| 🔒 Input sanitization module | Security beyond the minimum |
-| 📱 Fully responsive design | Mobile + desktop |
-| 🎨 CSS design token system | Consistent, maintainable styling |
-| ⌨️ Skip link + keyboard navigation | Full keyboard accessibility |
-| 🍞 Toast notifications | Feedback on actions |
-| 💰 INR bill-to-kWh conversion | India-specific convenience |
+GreenIQ includes several features that go beyond the original challenge:
 
-### 🌟 10 Interactive and Visual Features Added
-
-We have added 10 specific interactive and visual features to make the platform highly engaging, accessible, and AI-judge optimized:
-
-| Feature | Description | Implementation details |
-|---------|-------------|------------------------|
-| **1. Animated number count-up** | Easing number animations for key statistics | Custom React element, handles decimals, respects system `prefers-reduced-motion` settings. |
-| **2. Relatable equivalents row** | Real-world equivalents (trees, phone charges, driving km) | Deterministic math with custom inline SVGs (tree, phone, car) on the dashboard. |
-| **3. Color-shifting result theme** | Dynamic interface styling linked to footprint severity | Category-level overrides (`low` green to `very-high` red) updating colors dynamically. |
-| **4. Animated radial/arc gauge** | Radial arc speedometer for the primary footprint score | Smooth stroke-dashoffset transition (1.5s cubic-bezier), fully responsive & accessible. |
-| **5. SVG empty-state illustrations** | Sleek custom illustrations for empty views | Custom inline vector paths (`LeafIllustration`, `GrowthTreeIllustration`) replacing raw emojis. |
-| **6. Canvas PNG share card** | Custom high-resolution share card image generator | Renders key metrics to an offline HTML Canvas element and triggers an instant PNG download. |
-| **7. Interactive India state map** | SVG state-by-state clickable selector map | Side-by-side with `<select>` dropdown. Color-coded (HSL green-to-red). Full keyboard (tab + enter) support. |
-| **8. What-If Scenario simulator** | Interactive sliders/toggles to preview savings | Live recalculation (metro commute, veg diet, half AC, induction cooking) with delta comparisons. |
-| **9. Achievement Badges** | Gamified milestone system with custom titles/tooltips | 6 milestone badges (e.g. Eco Warrior, High Flyer, Coal Free) that unlock in real-time. |
-| **10. Typewriter-effect tips** | Dynamic reveal typing animation for reduction suggestions | Sequential char rendering with full screen-reader accessibility (instant `sr-only` mirror text). |
+* Interactive India state map
+* What-if carbon simulator
+* AI-powered sustainability coach
+* Shareable PNG score cards
+* Achievement badge system
+* Carbon equivalence visualizations
+* Dynamic severity themes
+* Animated sustainability gauges
+* Historical trend analytics
+* Personalized reduction planning
 
 ---
 
-## 📝 License
+# 🛣 Roadmap
 
-MIT
+* Carbon reduction goals
+* Community sustainability challenges
+* Renewable energy recommendations
+* Carbon offset integration
+* Multi-language support
+* Regional environmental insights
+* Smart sustainability coaching
 
 ---
 
-_Built for the PromptWars Hackathon by Hack2Skill — Challenge 3: Carbon Footprint Awareness Platform_
+# 🤝 Contributing
+
+Contributions are welcome.
+
+```bash
+git checkout -b feature/amazing-feature
+
+git commit -m "Add amazing feature"
+
+git push origin feature/amazing-feature
+```
+
+Then open a Pull Request.
+
+---
+
+# 📜 License
+
+MIT License
+
+---
+
+# 🌱 Final Thought
+
+GreenIQ is more than a carbon footprint calculator.
+
+It is a sustainability intelligence platform designed to help individuals transform awareness into measurable action through hyperlocal data, scientific transparency, AI-powered guidance, and long-term behavioral change.
+
+**Measure. Understand. Improve. Sustain.**
+
+---
+
+# ⭐ Support the Project
+
+If you found GreenIQ useful, insightful, or inspiring, please consider giving it a star on GitHub.
+
+⭐ Starring the repository helps increase visibility and motivates continued development.
+
+```bash
+git clone <repository-url>
+```
+
+**If you like GreenIQ, don't forget to leave a ⭐ on the repository!**
+
+---
+
+# 👨‍💻 Author
+
+## Prabhav Agrawal
+
+B.Tech Computer Science & Applied Mathematics (CSAM) student at IIIT Delhi, passionate about building impactful technology that combines software engineering, data-driven decision making, and real-world problem solving.
+
+### Interests
+
+- Full-Stack Development
+- Artificial Intelligence & Machine Learning
+- Data Science
+- Sustainability Technology
+- Human-Centered Product Design
+- Open Source Development
+
+### Connect With Me
+
+- GitHub: https://github.com/Prabhav77777
+- LinkedIn: https://linkedin.com/in/prabhav-agrawal-479971378/
+
+Feel free to reach out for collaborations, open-source contributions, hackathons, or interesting project discussions.
+
+---
+
+# 🏅 About This Project
+
+GreenIQ was developed to address a critical gap in sustainability tools available to Indian users.
+
+While most carbon footprint calculators are designed around Western assumptions, GreenIQ provides a hyperlocal and India-first approach to carbon intelligence by incorporating:
+
+- State-wise electricity emission factors
+- Indian transportation systems
+- Local dietary patterns
+- India-specific sustainability recommendations
+- Personalized reduction strategies
+
+The goal is simple:
+
+> Make sustainability understandable, measurable, and actionable for everyone.
+
+---
