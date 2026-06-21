@@ -1,4 +1,26 @@
 /**
+ * Share Card Generator
+ *
+ * #Business-Intent
+ * Encourage awareness and engagement through shareable results.
+ *
+ * @level-one-validation
+ * ✓ Canvas rendering validated
+ * ✓ Download workflow tested
+ *
+ * @risk-area
+ * Browser canvas APIs differ across platforms.
+ *
+ * #What
+ * Generates downloadable sustainability report cards.
+ *
+ * #Scope-Of-Improvement
+ * - Social-media-specific templates
+ * - Multi-language exports
+ * - PDF generation
+ */
+
+/**
  * Canvas-Based Shareable Card Generator
  *
  * Renders a styled GreenIQ result card to an HTML canvas and
