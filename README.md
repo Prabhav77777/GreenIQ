@@ -564,9 +564,8 @@ B.Tech Computer Science & Applied Mathematics (CSAM) student at IIIT Delhi, pass
 
 ### Connect With Me
 
-- GitHub: https://github.com/<your-github-username>
-- LinkedIn: https://linkedin.com/in/<your-linkedin-username>
-- Portfolio: https://<your-portfolio-link>
+- GitHub: https://github.com/Prabhav77777
+- LinkedIn: https://linkedin.com/in/prabhav-agrawal-479971378/
 
 Feel free to reach out for collaborations, open-source contributions, hackathons, or interesting project discussions.
 
