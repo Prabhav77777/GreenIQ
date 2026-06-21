@@ -1,5 +1,3 @@
-import { useState, useEffect, useCallback } from 'react';
-
 /**
  * State Persistence Layer
  *
@@ -18,6 +16,10 @@ import { useState, useEffect, useCallback } from 'react';
  * - IndexedDB support
  * - Cloud synchronization
  */
+
+import { useState, useEffect, useCallback } from 'react';
+
+
 export function useLocalStorage(key, initialValue) {
   const [storedValue, setStoredValue] = useState(() => {
     try {
