@@ -9,6 +9,8 @@
  * The math/calculation is NEVER done by the LLM — only the natural language.
  */
 
+import { sanitizeString } from '../utils/sanitize.js';
+
 /**
  * Curated fallback tips organized by category
  * Each tip: title, description, estimatedSavingsKg, effort, category
@@ -355,11 +357,11 @@ export async function generateTips(footprintResult, apiKey) {
       const category = tip.category || tip.Category || 'General';
 
       return {
-        title: String(title),
-        description: String(description),
+        title: sanitizeString(String(title)),
+        description: sanitizeString(String(description)),
         estimatedSavingsKg: Number(estimatedSavingsKg) || 0,
         effort: ['Easy', 'Medium', 'Hard'].includes(effort) ? effort : 'Medium',
-        category: String(category)
+        category: sanitizeString(String(category))
       };
     }).slice(0, 8);
 
