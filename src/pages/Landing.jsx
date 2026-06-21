@@ -111,7 +111,7 @@ export function Landing({ setPage }) {
 
       <footer className="footer" role="contentinfo">
         <p className="footer__text">
-          Built for PromptWars Hackathon • Challenge 3: Carbon Footprint Awareness Platform by PRABHAV AGRAWAL •{' '}
+          Built for PromptWars Hackathon Challenge 3: Carbon Footprint Awareness Platform by PRABHAV AGRAWAL •{' '}
           <span className="footer__link">Data sources: CEA, TERI, IPCC, IEA</span>
         </p>
       </footer>
