@@ -1,15 +1,25 @@
 /**
  * Real-World Carbon Equivalents Calculator
  *
- * Converts a user's annual kgCO2 footprint into relatable everyday equivalents.
- * All conversion factors are sourced and documented.
+ * #Business-Intent
+ * Improve user understanding by translating CO₂ emissions
+ * into relatable real-world examples.
  *
- * Sources:
- * - EPA Greenhouse Gas Equivalencies Calculator
- * - IEA Energy Statistics
- * - DEFRA / BEIS conversion factors 2023
+ * @level-one-validation
+ * ✓ Conversion factors documented
+ * ✓ Deterministic outputs verified
+ *
+ * @risk-area
+ * Public reference factors may be revised by source agencies.
+ *
+ * #What
+ * Converts annual emissions into trees, smartphone charges,
+ * and other understandable comparisons.
+ *
+ * #Scope-Of-Improvement
+ * - Additional equivalency types
+ * - India-specific environmental comparisons
  */
-
 /**
  * @constant {number} kgCO2 to fully charge a smartphone (~8.22g per charge)
  * Source: EPA — 8.22 gCO2 per smartphone charge (based on US grid; adjusted for India)
