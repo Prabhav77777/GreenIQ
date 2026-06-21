@@ -9,6 +9,30 @@ import { BENCHMARKS } from '../data/nationalAverages.js';
 import { AnimatedNumber } from '../components/AnimatedNumber.jsx';
 import { EarthMascot } from '../components/EarthMascot.jsx';
 import { LeafIllustration, ICONS } from '../components/Icons.jsx';
+import {
+     Chart as ChartJS,
+     CategoryScale,
+     LinearScale,
+     PointElement,
+     LineElement,
+     BarElement,
+     ArcElement,
+     Title,
+     Tooltip,
+     Legend,
+   } from 'chart.js';
+
+   ChartJS.register(
+     CategoryScale,
+     LinearScale,
+     PointElement,
+     LineElement,
+     BarElement,
+     ArcElement,
+     Title,
+     Tooltip,
+     Legend
+   );
 
 /** Chart colour palette used for category breakdown */
 const CHART_COLORS = ['#f59e0b', '#0ea5e9', '#22c55e', '#ef4444', '#8b5cf6'];

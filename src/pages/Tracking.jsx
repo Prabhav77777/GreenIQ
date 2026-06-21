@@ -2,6 +2,30 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { formatDate, formatCO2, formatChange } from '../utils/formatters.js';
 import { GrowthTreeIllustration } from '../components/Icons.jsx';
+import {
+     Chart as ChartJS,
+     CategoryScale,
+     LinearScale,
+     PointElement,
+     LineElement,
+     BarElement,
+     ArcElement,
+     Title,
+     Tooltip,
+     Legend,
+   } from 'chart.js';
+
+   ChartJS.register(
+     CategoryScale,
+     LinearScale,
+     PointElement,
+     LineElement,
+     BarElement,
+     ArcElement,
+     Title,
+     Tooltip,
+     Legend
+   );
 
 /**
  * Tracking page — the "Track" pillar.
