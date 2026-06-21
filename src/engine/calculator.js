@@ -1,18 +1,38 @@
 /**
  * GreenIQ Carbon Footprint Calculator Engine
- * 
- * Deterministic, pure-function calculation engine.
- * All math is based on real-world emission factors — no AI/LLM involvement.
- * Same inputs always produce the same outputs.
- * 
- * Formulas:
- * - Transport: (factor_gCO2_per_km × daily_km × 2 × commute_days/week × 52) / 1000 = kgCO2/year
- * - Electricity: monthly_kWh × gridFactor × 12 = kgCO2/year
- * - Diet: annualKgCO2 from diet profile lookup
- * - Flights: flights × avg_distance × 2 × 255 gCO2/km / 1000 = kgCO2/year (with RF)
- * - Lifestyle: AC + shopping + cooking fuel
+ *
+ * #Business-Intent
+ * Help users quantify their annual carbon footprint using
+ * transparent, explainable calculations based on transport,
+ * electricity, diet, flights and lifestyle choices.
+ *
+ * @level-one-validation
+ * ✓ Pure deterministic calculations
+ * ✓ No AI-generated mathematical outputs
+ * ✓ Consistent output for identical inputs
+ * ✓ Input normalization validated
+ *
+ * @risk-area
+ * Carbon emission factors may change over time and require updates.
+ *
+ * #What
+ * Converts user lifestyle inputs into annual CO₂ emissions
+ * and benchmark comparisons.
+ *
+ * #Uncertain
+ * Emission factors are based on published averages and may vary
+ * across regions and providers.
+ *
+ * #Scope-Of-Improvement
+ * - Dynamic emission factor updates
+ * - More granular regional calculations
+ * - Additional lifestyle categories
+ *
+ * PR Changes
+ * - Added benchmark comparisons
+ * - Added category-wise breakdowns
+ * - Improved calculation transparency
  */
-
 import { getTransportMode } from '../data/transportModes.js';
 import { getGridFactor } from '../data/indianStates.js';
 import { getDietProfile } from '../data/dietProfiles.js';
