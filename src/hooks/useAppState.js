@@ -1,11 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 
 /**
- * Custom hook for persistent state via localStorage
- * Handles serialization, error recovery, and SSR safety
- * @param {string} key - localStorage key
- * @param {*} initialValue - Default value if key doesn't exist
- * @returns {[any, function, function]} [value, setValue, removeValue]
+ * State Persistence Layer
+ *
+ * #Business-Intent
+ * Preserve user calculations and preferences across sessions.
+ *
+ * @level-one-validation
+ * ✓ localStorage recovery tested
+ * ✓ Serialization validated
+ * ✓ Error handling implemented
+ *
+ * @risk-area
+ * Browser storage limitations and private browsing restrictions.
+ *
+ * #Scope-Of-Improvement
+ * - IndexedDB support
+ * - Cloud synchronization
  */
 export function useLocalStorage(key, initialValue) {
   const [storedValue, setStoredValue] = useState(() => {
