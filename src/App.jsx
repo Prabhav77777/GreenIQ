@@ -12,6 +12,7 @@ import { getDisplayEquivalents } from './engine/equivalents.js';
 import { getUnlockedBadges, getAllBadges } from './engine/badges.js';
 import { renderShareCard, downloadCanvasAsPNG } from './utils/shareCard.js';
 import { INDIA_MAP_PATHS } from './data/indiaMapPaths.js';
+import { EarthMascot } from './components/EarthMascot.jsx';
 
 // Chart.js setup
 import {
@@ -907,7 +908,17 @@ function Dashboard({ result, latestInputs, setPage }) {
         </div>
       </div>
 
-      <div className="dashboard__grid">
+      <div className="dashboard__grid dashboard__grid--three">
+        {/* Earth Mascot Card */}
+        <div className="card animate-fade-in-up" style={{animationDelay: '0.05s', opacity: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+          <div className="card__header" style={{width: '100%'}}>
+            <h2 className="card__title">Earth Mascot Status</h2>
+          </div>
+          <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-4)'}}>
+            <EarthMascot result={result} inputs={latestInputs} />
+          </div>
+        </div>
+
         {/* Doughnut Chart */}
         <div className="card animate-fade-in-up" style={{animationDelay: '0.1s', opacity: 0}}>
           <div className="card__header">
