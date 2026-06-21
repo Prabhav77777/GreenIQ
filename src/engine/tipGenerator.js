@@ -1,12 +1,32 @@
 /**
  * GreenIQ Tip Generator
- * 
- * Generates personalized carbon reduction tips.
- * Two modes:
- * 1. LLM-powered (Grok API) — rich, contextual, natural-language tips
- * 2. Fallback — curated static tips matched to user's highest-emission categories
- * 
- * The math/calculation is NEVER done by the LLM — only the natural language.
+ *
+ * #Business-Intent
+ * Convert footprint results into practical carbon reduction actions.
+ *
+ * @level-one-validation
+ * ✓ LLM used only for language generation
+ * ✓ Core calculations remain deterministic
+ * ✓ Static fallback available
+ *
+ * @risk-area
+ * AI-generated recommendations may occasionally be generic.
+ *
+ * #What
+ * Generates personalized sustainability recommendations
+ * based on highest-emission categories.
+ *
+ * #Uncertain
+ * Actual carbon savings depend on user adoption.
+ *
+ * #Scope-Of-Improvement
+ * - Hyper-personalized recommendations
+ * - Region-specific suggestions
+ * - Savings confidence estimation
+ *
+ * PR Changes
+ * - Added fallback recommendation system
+ * - Added category-aware tip generation
  */
 
 import { sanitizeString } from '../utils/sanitize.js';
