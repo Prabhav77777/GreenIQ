@@ -1,18 +1,26 @@
+
 /**
  * Achievement Badge System
  *
- * Deterministic badge logic — given the same inputs, the same badges always unlock.
- * Badges are derived purely from calculator inputs, not from LLM output.
+ * #Business-Intent
+ * Encourage sustainable behaviour through gamification.
+ *
+ * @level-one-validation
+ * ✓ Deterministic unlock logic
+ * ✓ No AI dependency
+ * ✓ Consistent badge assignment
+ *
+ * @risk-area
+ * Badge thresholds may require tuning as user base grows.
+ *
+ * #What
+ * Awards achievements based on sustainable choices.
+ *
+ * #Scope-Of-Improvement
+ * - Progressive badge levels
+ * - Seasonal challenges
+ * - Community achievements
  */
-
-/**
- * @typedef {object} Badge
- * @property {string} id - Unique identifier
- * @property {string} icon - Emoji icon
- * @property {string} title - Display title
- * @property {string} description - How it was earned
- */
-
 /**
  * All available badges with their unlock conditions.
  * Each condition is a pure function of the user inputs.
