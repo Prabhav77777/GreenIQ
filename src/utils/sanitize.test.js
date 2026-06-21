@@ -3,6 +3,7 @@ import {
   sanitizeString,
   sanitizeNumber,
   sanitizeEnum,
+  sanitizeTransportModes,
   validateCalculatorInputs
 } from './sanitize.js';
 
@@ -127,5 +128,46 @@ describe('validateCalculatorInputs', () => {
     const raw = { state: '' };
     const { errors } = validateCalculatorInputs(raw);
     expect(errors).toContain('Please select your state');
+  });
+
+  it('sanitizes multi-mode transport entries and rejects invalid modes', () => {
+    const { inputs } = validateCalculatorInputs({
+      state: 'KA',
+      transportModes: [
+        { modeId: 'metro', dailyDistanceKm: '12', daysPerWeek: 5 },
+        { modeId: '<script>bad</script>', dailyDistanceKm: 9999, daysPerWeek: 99 },
+        { modeId: 'car_petrol', dailyDistanceKm: -5, daysPerWeek: 2 }
+      ]
+    });
+    expect(inputs.transportModes).toEqual([
+      { modeId: 'metro', dailyDistanceKm: 12, daysPerWeek: 5 },
+      { modeId: 'car_petrol', dailyDistanceKm: 0, daysPerWeek: 2 }
+    ]);
+  });
+
+  it('falls back to a legacy transport entry when no valid array remains', () => {
+    const { inputs } = validateCalculatorInputs({
+      state: 'DL',
+      transportMode: 'bus',
+      dailyDistanceKm: 7,
+      commuteDaysPerWeek: 3,
+      transportModes: [{ modeId: 'spaceship', dailyDistanceKm: 20 }]
+    });
+    expect(inputs.transportModes).toEqual([
+      { modeId: 'bus', dailyDistanceKm: 7, daysPerWeek: 3 }
+    ]);
+  });
+});
+
+describe('sanitizeTransportModes', () => {
+  it('deduplicates modes and clamps usage fields', () => {
+    expect(sanitizeTransportModes([
+      { modeId: 'metro', dailyDistanceKm: 10, daysPerWeek: 5 },
+      { modeId: 'metro', dailyDistanceKm: 20, daysPerWeek: 7 },
+      { modeId: 'bus', dailyDistanceKm: 800, daysPerWeek: -1 }
+    ], ['metro', 'bus'])).toEqual([
+      { modeId: 'metro', dailyDistanceKm: 10, daysPerWeek: 5 },
+      { modeId: 'bus', dailyDistanceKm: 500, daysPerWeek: 0 }
+    ]);
   });
 });

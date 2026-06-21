@@ -77,6 +77,16 @@ button {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .animate-fade-in-up,
+  .animate-fade-in,
+  .animate-slide-in-right,
+  .animate-slide-in-left,
+  .animate-scale-in {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -273,7 +283,7 @@ strong {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp var(--transition-slow) forwards;
+  animation: fadeInUp var(--transition-slow) both;
 }
 
 .animate-slide-in-right {

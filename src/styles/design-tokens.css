@@ -202,6 +202,16 @@
   --badge-unlock-border: var(--color-primary-200);
   --badge-locked-bg: var(--color-gray-100);
   --badge-locked-border: var(--color-gray-200);
+
+  --earth-ocean: var(--color-secondary-500);
+  --earth-ocean-light: var(--color-secondary-200);
+  --earth-ocean-shadow: var(--color-secondary-700);
+  --earth-land: var(--color-primary-500);
+  --earth-land-stressed: var(--color-warning);
+  --earth-heat: var(--color-danger);
+  --earth-smog: var(--color-gray-500);
+  --earth-face: var(--color-gray-900);
+  --earth-shoe: var(--color-gray-800);
 }
 
 /* Category-specific result accent overrides (Feature 3) */

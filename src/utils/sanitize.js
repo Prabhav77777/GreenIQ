@@ -43,6 +43,29 @@ export function sanitizeEnum(input, allowedValues, fallback) {
   return allowedValues.includes(sanitized) ? sanitized : fallback;
 }
 
+export function sanitizeTransportModes(rawModes, allowedValues, fallbackDays = 5) {
+  if (!Array.isArray(rawModes)) return [];
+
+  const seen = new Set();
+  return rawModes.reduce((validModes, rawMode) => {
+    if (!rawMode || typeof rawMode !== 'object') return validModes;
+    const modeId = sanitizeEnum(rawMode.modeId ?? rawMode.mode, allowedValues, '');
+    if (!modeId || seen.has(modeId)) return validModes;
+    seen.add(modeId);
+    validModes.push({
+      modeId,
+      dailyDistanceKm: sanitizeNumber(rawMode.dailyDistanceKm ?? rawMode.distanceKm, 0, 500, 0),
+      daysPerWeek: sanitizeNumber(
+        rawMode.daysPerWeek ?? rawMode.commuteDaysPerWeek,
+        0,
+        7,
+        fallbackDays
+      )
+    });
+    return validModes;
+  }, []);
+}
+
 /**
  * Validate complete calculator form inputs
  * Returns sanitized inputs + any validation errors
@@ -61,10 +84,23 @@ export function validateCalculatorInputs(rawInputs) {
   const validShoppingLevels = ['low', 'average', 'high', 'very_high'];
   const validCookingFuels = ['lpg', 'png', 'electric', 'biomass'];
 
-  const inputs = {
-    transportMode: sanitizeEnum(rawInputs.transportMode, validTransportModes, 'bus'),
+  const transportModes = sanitizeTransportModes(
+    rawInputs.transportModes,
+    validTransportModes,
+    sanitizeNumber(rawInputs.commuteDaysPerWeek, 0, 7, 5)
+  );
+  const legacyTransportMode = sanitizeEnum(rawInputs.transportMode, validTransportModes, 'bus');
+  const normalizedTransportModes = transportModes.length > 0 ? transportModes : [{
+    modeId: legacyTransportMode,
     dailyDistanceKm: sanitizeNumber(rawInputs.dailyDistanceKm, 0, 500, 0),
-    commuteDaysPerWeek: sanitizeNumber(rawInputs.commuteDaysPerWeek, 0, 7, 5),
+    daysPerWeek: sanitizeNumber(rawInputs.commuteDaysPerWeek, 0, 7, 5)
+  }];
+
+  const inputs = {
+    transportModes: normalizedTransportModes,
+    transportMode: normalizedTransportModes[0].modeId,
+    dailyDistanceKm: normalizedTransportModes[0].dailyDistanceKm,
+    commuteDaysPerWeek: normalizedTransportModes[0].daysPerWeek,
     state: sanitizeString(rawInputs.state || 'DL'),
     monthlyKwh: sanitizeNumber(rawInputs.monthlyKwh, 0, 10000, 0),
     monthlyBillINR: sanitizeNumber(rawInputs.monthlyBillINR, 0, 100000, 0),

@@ -17,20 +17,37 @@
  * All available badges with their unlock conditions.
  * Each condition is a pure function of the user inputs.
  */
+function getTransportModes(inputs) {
+  if (Array.isArray(inputs.transportModes)) {
+    return inputs.transportModes.map(mode => mode.modeId ?? mode.mode);
+  }
+  return inputs.transportMode ? [inputs.transportMode] : [];
+}
+
+function getShortestCommute(inputs) {
+  if (Array.isArray(inputs.transportModes)) {
+    const distances = inputs.transportModes
+      .map(mode => Number(mode.dailyDistanceKm ?? mode.distanceKm) || 0)
+      .filter(distance => distance > 0);
+    return distances.length > 0 ? Math.min(...distances) : 0;
+  }
+  return Number(inputs.dailyDistanceKm) || 0;
+}
+
 const BADGE_DEFINITIONS = [
   {
     id: 'cyclist',
     icon: '🚲',
     title: 'Cyclist',
     description: 'Commutes by bicycle or walking',
-    condition: (inputs) => inputs.transportMode === 'bicycle'
+    condition: (inputs) => getTransportModes(inputs).includes('bicycle')
   },
   {
     id: 'transit_pro',
     icon: '🚇',
     title: 'Transit Pro',
     description: 'Uses public transport for daily commute',
-    condition: (inputs) => ['metro', 'bus', 'train'].includes(inputs.transportMode)
+    condition: (inputs) => getTransportModes(inputs).some(mode => ['metro', 'bus', 'train'].includes(mode))
   },
   {
     id: 'plant_based',
@@ -89,7 +106,7 @@ const BADGE_DEFINITIONS = [
     icon: '🏡',
     title: 'Neighborhood Hero',
     description: 'Commutes less than 5 km each way',
-    condition: (inputs) => (Number(inputs.dailyDistanceKm) || 0) <= 5 && (Number(inputs.dailyDistanceKm) || 0) > 0
+    condition: (inputs) => getShortestCommute(inputs) <= 5 && getShortestCommute(inputs) > 0
   }
 ];
 

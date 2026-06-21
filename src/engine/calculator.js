@@ -34,7 +34,7 @@ import {
  * @param {number} daysPerWeek - Number of commute days per week (1-7)
  * @returns {{ value: number, mode: string, factor: number, dailyKm: number, daysPerWeek: number }}
  */
-export function calculateTransport(modeId, dailyDistanceKm, daysPerWeek) {
+function calculateSingleTransport(modeId, dailyDistanceKm, daysPerWeek) {
   const mode = getTransportMode(modeId);
   if (!mode) {
     return { value: 0, mode: 'unknown', factor: 0, dailyKm: 0, daysPerWeek: 0 };
@@ -52,6 +52,29 @@ export function calculateTransport(modeId, dailyDistanceKm, daysPerWeek) {
     factor: mode.factor,
     dailyKm: distKm,
     daysPerWeek: days
+  };
+}
+
+export function calculateTransport(modeOrModes, dailyDistanceKm, daysPerWeek) {
+  if (!Array.isArray(modeOrModes)) {
+    return calculateSingleTransport(modeOrModes, dailyDistanceKm, daysPerWeek);
+  }
+
+  const modes = modeOrModes
+    .map(item => calculateSingleTransport(
+      item.modeId ?? item.mode,
+      item.dailyDistanceKm ?? item.distanceKm,
+      item.daysPerWeek ?? item.commuteDaysPerWeek ?? daysPerWeek
+    ))
+    .filter(item => item.mode !== 'unknown');
+
+  return {
+    value: Math.round(modes.reduce((sum, mode) => sum + mode.value, 0) * 10) / 10,
+    mode: modes.length > 1 ? 'Multiple modes' : (modes[0]?.mode || 'unknown'),
+    factor: null,
+    dailyKm: modes.reduce((sum, mode) => sum + mode.dailyKm, 0),
+    daysPerWeek: null,
+    modes
   };
 }
 
@@ -177,7 +200,7 @@ export function calculateLifestyle(acHoursPerDay = 0, shoppingLevel = 'average',
  */
 export function calculateFootprint(inputs) {
   const transport = calculateTransport(
-    inputs.transportMode,
+    inputs.transportModes || inputs.transportMode,
     inputs.dailyDistanceKm,
     inputs.commuteDaysPerWeek
   );

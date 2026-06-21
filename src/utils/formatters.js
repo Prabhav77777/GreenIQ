@@ -48,6 +48,22 @@ export function formatDate(date) {
   }
 }
 
+export function formatDateTime(date) {
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return 'Invalid date';
+    return d.toLocaleString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+  } catch {
+    return 'Invalid date';
+  }
+}
+
 /**
  * Format percentage change with arrow
  * @param {number} percent - Percentage change

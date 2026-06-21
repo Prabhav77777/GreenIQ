@@ -63,6 +63,25 @@ describe('calculateTransport', () => {
     const expected = (38 * 5 * 2 * 6 * 52) / 1000;
     expect(result.value).toBeCloseTo(expected, 0);
   });
+
+  it('sums emissions across multiple transport modes', () => {
+    const result = calculateTransport([
+      { modeId: 'metro', dailyDistanceKm: 10, daysPerWeek: 5 },
+      { modeId: 'car_petrol', dailyDistanceKm: 3, daysPerWeek: 2 },
+      { modeId: 'bicycle', dailyDistanceKm: 2, daysPerWeek: 5 }
+    ]);
+    const expectedMetro = (18 * 10 * 2 * 5 * 52) / 1000;
+    const expectedCar = (120 * 3 * 2 * 2 * 52) / 1000;
+    expect(result.value).toBeCloseTo(expectedMetro + expectedCar, 1);
+    expect(result.modes).toHaveLength(3);
+    expect(result.mode).toBe('Multiple modes');
+  });
+
+  it('keeps legacy single-mode calculations backward compatible', () => {
+    const legacy = calculateTransport('bus', 8, 4);
+    const multi = calculateTransport([{ modeId: 'bus', dailyDistanceKm: 8, daysPerWeek: 4 }]);
+    expect(multi.value).toBe(legacy.value);
+  });
 });
 
 describe('calculateElectricity', () => {
@@ -270,5 +289,17 @@ describe('calculateFootprint (integration)', () => {
     expect(result.totalTonnes).toBeGreaterThanOrEqual(0);
     // Should still have diet + shopping + cooking
     expect(result.totalKg).toBeGreaterThan(0);
+  });
+
+  it('uses per-mode distances in the complete footprint', () => {
+    const result = calculateFootprint({
+      ...sampleInputs,
+      transportModes: [
+        { modeId: 'metro', dailyDistanceKm: 12, daysPerWeek: 5 },
+        { modeId: 'car_petrol', dailyDistanceKm: 2, daysPerWeek: 1 }
+      ]
+    });
+    expect(result.transport.modes).toHaveLength(2);
+    expect(result.transport.value).toBeGreaterThan(0);
   });
 });
